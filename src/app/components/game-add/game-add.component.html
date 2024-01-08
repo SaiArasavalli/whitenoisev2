@@ -1,0 +1,156 @@
+<mat-dialog-content class="bg-pre">
+  <h1 class="text-center mb-4">New Game</h1>
+  <form
+    class="d-flex flex-column gap-3"
+    [formGroup]="gameForm"
+    (ngSubmit)="addGame()"
+  >
+    <div>
+      <mat-form-field appearance="outline" color="accent" class="bg-pre w-100">
+        <mat-label>Board</mat-label>
+        <mat-select formControlName="board">
+          <mat-option
+            *ngFor="let board of boards"
+            [value]="board.name"
+            class="bg-pre"
+          >
+            {{ board.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field appearance="outline" color="accent" class="bg-pre w-100">
+        <mat-label>Started</mat-label>
+        <input matInput type="time" formControlName="startTime" />
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field appearance="outline" color="accent" class="bg-pre w-100">
+        <mat-label>Ended</mat-label>
+        <input matInput type="time" formControlName="endTime" />
+      </mat-form-field>
+    </div>
+    <div>
+      <button
+        mat-raised-button
+        type="button"
+        class="bg-violet p-4 w-100"
+        (click)="addPlayer()"
+      >
+        <div class="d-flex align-items-center gap-2">
+          <span>Add Player</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            fill="currentColor"
+            class="bi bi-plus-circle-fill"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"
+            />
+          </svg>
+        </div>
+      </button>
+    </div>
+    <div formArrayName="players">
+      <div
+        *ngFor="let player of players.controls; let i = index"
+        [formGroupName]="i"
+        class="d-flex align-items-center my-2 gap-1"
+      >
+        <mat-slide-toggle
+          color="accent"
+          formControlName="lost"
+          [checked]="players.controls[i].get('lost')?.value"
+        >
+        </mat-slide-toggle>
+        <mat-form-field
+          appearance="outline"
+          color="accent"
+          class="bg-pre w-100"
+        >
+          <mat-label>Player</mat-label>
+          <mat-select formControlName="name">
+            <mat-option
+              *ngFor="let customer of customers"
+              [value]="customer.name"
+              class="bg-pre"
+            >
+              {{ customer.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field
+          appearance="outline"
+          color="accent"
+          class="bg-pre w-100"
+          *ngIf="player.get('lost')?.value"
+        >
+          <mat-label>Payment</mat-label>
+          <mat-select formControlName="payment">
+            <mat-option value="PAID" class="bg-pre">PAID </mat-option>
+            <mat-option value="PENDING" class="bg-pre">PENDING </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <button
+          mat-raised-button
+          class="bg-pre p-0"
+          type="button"
+          (click)="removePlayer(i)"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-trash3-fill text-danger"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div>
+      <mat-form-field appearance="outline" color="accent" class="bg-pre w-100">
+        <mat-label>Comment</mat-label>
+        <textarea matInput formControlName="comment"></textarea>
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field appearance="outline" color="accent" class="bg-pre w-100">
+        <mat-label>Date</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="created" />
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="picker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker touchUi #picker></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <button
+      mat-raised-button
+      class="p-4 w-100"
+      color="accent"
+      *ngIf="!submitting"
+    >
+      Add
+    </button>
+    <button
+      mat-raised-button
+      class="p-4 w-100"
+      color="accent"
+      *ngIf="submitting"
+    >
+      <div class="spinner-border spinner-border-sm" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </button>
+  </form>
+</mat-dialog-content>

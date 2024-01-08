@@ -1,0 +1,65 @@
+<!-- Mobile  -->
+
+<div class="d-block">
+  <form
+    [formGroup]="billForm"
+    (ngSubmit)="calculate()"
+    class="d-flex flex-column align-items-center gap-2"
+  >
+    <mat-form-field appearance="outline" color="accent" class="bg-pre w-100">
+      <mat-label>Player/Customer</mat-label>
+      <mat-select formControlName="player">
+        <mat-option
+          class="bg-pre"
+          *ngFor="let customer of customers"
+          [value]="customer.name"
+        >
+          {{ customer.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline" color="accent" class="bg-pre w-100">
+      <mat-label>Enter a date range</mat-label>
+      <mat-date-range-input [rangePicker]="picker">
+        <input matStartDate formControlName="startDate" />
+        <input matEndDate formControlName="endDate" />
+      </mat-date-range-input>
+      <mat-datepicker-toggle
+        matIconSuffix
+        [for]="picker"
+      ></mat-datepicker-toggle>
+      <mat-date-range-picker touchUi #picker></mat-date-range-picker>
+    </mat-form-field>
+    <button
+      mat-raised-button
+      class="p-4 w-100"
+      color="accent"
+      *ngIf="!submitting"
+    >
+      Generate Bill
+    </button>
+    <button
+      mat-raised-button
+      class="p-4 w-100"
+      color="accent"
+      *ngIf="submitting"
+    >
+      <div class="spinner-border spinner-border-sm" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </button>
+  </form>
+  <div class="my-5 d-flex align-items-center justify-content-center gap-5 fs-5">
+    <div>
+      <span *ngIf="isPlayerSub(billForm.value.player!)"
+        >Game : {{ gameAmount }} min</span
+      >
+      <span *ngIf="!isPlayerSub(billForm.value.player!)"
+        >Game : Rs. {{ gameAmount }}</span
+      >
+    </div>
+    <div>
+      <span>Order : Rs. {{ orderAmount }}</span>
+    </div>
+  </div>
+</div>

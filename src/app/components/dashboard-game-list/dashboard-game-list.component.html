@@ -1,0 +1,218 @@
+<!-- Mobile -->
+
+<div class="d-block">
+  <button
+    mat-raised-button
+    class="bg-violet rounded-0 w-100 p-4"
+    (click)="addGame()"
+  >
+    New Game
+  </button>
+
+  <div class="table-responsive my-3">
+    <table mat-table [dataSource]="games" class="mat-elevation-z8">
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>No.</th>
+        <td mat-cell *matCellDef="let element; let i = index">{{ i + 1 }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="board">
+        <th mat-header-cell *matHeaderCellDef>Board</th>
+        <td mat-cell *matCellDef="let element">{{ element.board }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="startTime">
+        <th mat-header-cell *matHeaderCellDef>Started</th>
+        <td mat-cell *matCellDef="let element">
+          {{ getFormattedTime(element.startTime) }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="endTime">
+        <th mat-header-cell *matHeaderCellDef>Ended</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.endTime ? getFormattedTime(element.endTime) : "---" }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="duration">
+        <th mat-header-cell *matHeaderCellDef>Duration</th>
+        <td mat-cell *matCellDef="let element">
+          {{
+            element.endTime
+              ? calcuateDuration(element.startTime, element.endTime)
+              : "---"
+          }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="totalAmount">
+        <th mat-header-cell *matHeaderCellDef>Amount</th>
+        <td mat-cell *matCellDef="let element">
+          {{
+            element.endTime
+              ? round(
+                  calculateTotalAmount(
+                    element.board,
+                    element.startTime,
+                    element.endTime
+                  )
+                )
+              : "---"
+          }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="players">
+        <th mat-header-cell *matHeaderCellDef>Players</th>
+        <td mat-cell *matCellDef="let element">
+          <table
+            mat-table
+            [dataSource]="element.players"
+            class="mat-elevation-z8"
+          >
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>Name</th>
+              <td mat-cell *matCellDef="let player">
+                <div *ngIf="isPlayerSub(player.name)" class="text-warning">
+                  .{{ player.name }}
+                </div>
+                <div *ngIf="!isPlayerSub(player.name)">.{{ player.name }}</div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="charge">
+              <th mat-header-cell *matHeaderCellDef>Charge</th>
+              <td mat-cell *matCellDef="let player">
+                <div *ngIf="!player.lost">---</div>
+                <div *ngIf="player.lost && !isPlayerSub(player.name)">
+                  Rs.
+                  {{
+                    round(
+                      calculateTotalAmount(
+                        element.board,
+                        element.startTime,
+                        element.endTime
+                      ) / countLostPlayers(element.players)
+                    )
+                  }}
+                </div>
+                <div *ngIf="player.lost && isPlayerSub(player.name)">
+                  {{
+                    round(
+                      calculateMinutes(element.startTime, element.endTime) /
+                        countLostPlayers(element.players)
+                    )
+                  }}
+                  min
+                </div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="payment">
+              <th mat-header-cell *matHeaderCellDef>Payment</th>
+              <td mat-cell *matCellDef="let player">
+                <div *ngIf="!player.lost">---</div>
+                <div *ngIf="player.lost">
+                  <button
+                    mat-raised-button
+                    color="accent"
+                    *ngIf="player.payment === 'PAID'"
+                  >
+                    PAID
+                  </button>
+                  <button
+                    mat-raised-button
+                    color="warn"
+                    *ngIf="player.payment === 'PENDING'"
+                  >
+                    PENDING
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+
+            <tr mat-row *matRowDef="let row; columns: displayedColumns2"></tr>
+          </table>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef>Date</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.created.toDate() | date : "d/M/yy" }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="comment">
+        <th mat-header-cell *matHeaderCellDef>Comment</th>
+        <td mat-cell *matCellDef="let element">
+          <div *ngIf="element.comment">
+            <button mat-button class="p-4" (click)="editGame(element)">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-chat-square-text-fill"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.5a1 1 0 0 0-.8.4l-1.9 2.533a1 1 0 0 1-1.6 0L5.3 12.4a1 1 0 0 0-.8-.4H2a2 2 0 0 1-2-2zm3.5 1a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1zm0 2.5a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1zm0 2.5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1z"
+                />
+              </svg>
+            </button>
+          </div>
+          <div *ngIf="!element.comment">---</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let element">
+          <div class="d-flex align-items-center gap-1">
+            <button
+              mat-raised-button
+              class="bg-pre"
+              (click)="editGame(element)"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-pencil-fill text-primary"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z"
+                />
+              </svg>
+            </button>
+            <button
+              mat-raised-button
+              class="bg-pre"
+              (click)="deleteGame(element.id)"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-trash3-fill text-danger"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"
+                />
+              </svg>
+            </button>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+</div>

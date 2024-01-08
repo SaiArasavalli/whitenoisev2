@@ -1,0 +1,14 @@
+<!-- Mobile -->
+
+<div class="d-block d-lg-none">
+  <div class="row row-cols-1 g-3">
+    <app-timer *ngFor="let board of boards" [board]="board"></app-timer>
+  </div>
+</div>
+
+<!-- Desktop -->
+<div class="d-none d-lg-block">
+  <div class="row row-cols-4 g-1">
+    <app-timer *ngFor="let board of boards" [board]="board"></app-timer>
+  </div>
+</div>

@@ -1,0 +1,39 @@
+<mat-dialog-content class="bg-pre">
+  <h1 class="text-center mb-4">Edit Board</h1>
+  <form
+    [formGroup]="boardForm"
+    (ngSubmit)="editBoard()"
+    class="d-flex flex-column align-items-center gap-3"
+  >
+    <div>
+      <mat-form-field appearance="outline" color="accent" class="bg-pre">
+        <mat-label>Name</mat-label>
+        <input matInput type="text" formControlName="name" />
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field appearance="outline" color="accent" class="bg-pre">
+        <mat-label>Price</mat-label>
+        <input matInput type="text" formControlName="price" />
+      </mat-form-field>
+    </div>
+    <button
+      mat-raised-button
+      class="p-4 w-100"
+      color="accent"
+      *ngIf="!submitting"
+    >
+      Save
+    </button>
+    <button
+      mat-raised-button
+      class="p-4 w-100"
+      color="accent"
+      *ngIf="submitting"
+    >
+      <div class="spinner-border spinner-border-sm" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </button>
+  </form>
+</mat-dialog-content>

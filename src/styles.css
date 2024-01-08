@@ -1,1 +1,37 @@
-/* You can add global styles to this file, and also import other style files */
+* {
+  font-family: "Rubik", sans-serif !important;
+}
+
+body {
+  color: #fff;
+  background: #000;
+}
+
+.bg-violet {
+  background: #2c2c2c !important;
+}
+
+.bg-pre {
+  background: #0c0f10 !important;
+}
+
+nav {
+  border-bottom: 1px solid rgb(20, 20, 20);
+}
+
+th,
+td {
+  background: #0c0f10 !important;
+  text-align: center !important;
+  vertical-align: middle !important;
+  padding: 10px !important;
+}
+
+.mat-mdc-form-field-subscript-wrapper {
+  display: none;
+}
+
+mat-card {
+  /* background: #0c0f10 !important; */
+  background: linear-gradient(180deg, #242424, #121212 65.62%);
+}

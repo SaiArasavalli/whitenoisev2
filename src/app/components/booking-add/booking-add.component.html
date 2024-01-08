@@ -1,0 +1,66 @@
+<mat-dialog-content class="bg-pre">
+  <h1 class="text-center mb-4">New Booking</h1>
+  <form
+    [formGroup]="bookingForm"
+    (ngSubmit)="addBooking()"
+    class="d-flex flex-column align-items-center gap-3"
+  >
+    <div>
+      <mat-form-field appearance="outline" color="accent" class="bg-pre">
+        <mat-label>Name</mat-label>
+        <input matInput type="text" formControlName="name" />
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field appearance="outline" color="accent" class="bg-pre">
+        <mat-label>Start Time</mat-label>
+        <input matInput type="time" formControlName="startTime" />
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field appearance="outline" color="accent" class="bg-pre">
+        <mat-label>End Time</mat-label>
+        <input matInput type="time" formControlName="endTime" />
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field appearance="outline" color="accent" class="bg-pre">
+        <mat-label>Phone</mat-label>
+        <input matInput type="text" formControlName="phone" />
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field appearance="outline" color="accent" class="bg-pre">
+        <mat-label>Booking Date</mat-label>
+        <input
+          matInput
+          [matDatepicker]="picker"
+          formControlName="bookingDate"
+        />
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="picker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker touchUi #picker></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <button
+      mat-raised-button
+      class="p-4 w-100"
+      color="accent"
+      *ngIf="!submitting"
+    >
+      Add
+    </button>
+    <button
+      mat-raised-button
+      class="p-4 w-100"
+      color="accent"
+      *ngIf="submitting"
+    >
+      <div class="spinner-border spinner-border-sm" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </button>
+  </form>
+</mat-dialog-content>
